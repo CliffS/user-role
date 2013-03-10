@@ -4,9 +4,17 @@ use strict;
 use warnings;
 use 5.14.0;
 
+use version; our $VERSION = qv('v0.1.0');
+
 use Tie::DBI;
 
 use enum qw{ false true };
+
+=head1 NAME
+
+User::Role - Define recursive user roles
+
+=cut
 
 sub new
 {
