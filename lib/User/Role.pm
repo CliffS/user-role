@@ -38,8 +38,7 @@ sub check
     my ($role, $against) = @_;
     while (defined $role)
     {
-	say "$role $against";
-	return false unless exists $self->{$role};	# No such role
+	last unless exists $self->{$role};	# No such role
 	return true if ($role eq $against);
 	$role = $self->{$role};
     }
