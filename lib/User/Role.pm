@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use 5.14.0;
 
-use version; our $VERSION = qv('v0.1.1');
+use version; our $VERSION = qv('v0.2.0');
 
 use Tie::DBI;
 use Carp;
@@ -48,38 +48,45 @@ sub add
 sub check
 {
     my $self = shift;
-    my ($role, $against) = @_;
-    if (ref $against eq 'ARRAY')
+    my ($required, $possesses) = @_;
+    if (ref $possesses eq 'ARRAY')
     {
-	foreach (@$against)
+	foreach (@$possesses)
 	{
-	    return true if $self->check($role, $_);
+	    return true if $self->check($required, $_);
 	}
     }
     else {
-	while (defined $role)
+	while (defined $possesses)
 	{
-	    last unless exists $self->{$role};	# No such role
-	    return true if ($role eq $against);
-	    $role = $self->{$role};
+	    last unless exists $self->{$possesses};	# No such role
+	    return true if ($required eq $possesses);
+	    $possesses = $self->{$possesses};
 	}
     }
     return false;
 }
 
+sub enforce
+{
+    my $self = shift;
+    my $ok = $self->check(@_);
+    die "unenforceable" unless $ok;
+}
+
 sub is
 {
     my $self = shift;
-    my ($role, $against) = @_;
-    if (ref $against eq 'ARRAY')
+    my ($required, $possesses) = @_;
+    if (ref $possesses eq 'ARRAY')
     {
-	foreach (@$against)
+	foreach (@$possesses)
 	{
-	    return true if $self->is($role, $_);
+	    return true if $self->is($required, $_);
 	}
     }
     else {
-	return true if ($role eq $against);
+	return true if ($required eq $possesses);
     }
     return false;
 }
