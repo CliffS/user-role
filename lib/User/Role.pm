@@ -21,7 +21,8 @@ User::Role - Define recursive user roles
 sub new
 {
     my $class = shift;
-    my $self = {};
+    my $root = shift;
+    my $self = $root ?  { root => $root } : {};
     bless $self, $class;
 }
 
@@ -30,10 +31,10 @@ sub new
 sub load
 {
     my $class = shift;
-    my %params = @_;	# db, table, key, user, password
-    my $self = new $class;
-    my %table;
-    tie %table, 'Tie::DBI', \%params;
+    my %params = @_;	# db, table, key, user, password, root
+    my $self = $class->new($params{root});
+    delete $params{root};
+    tie my %table, 'Tie::DBI', \%params;
     $self->add($_, $table{$_}{parent}) foreach keys %table;
     return $self;
 }
@@ -55,6 +56,10 @@ sub check
 	{
 	    return true if $self->check($required, $_);
 	}
+    }
+    elsif ($possesses eq $self->{root})
+    {
+	return true;
     }
     else {
 	while (defined $possesses)
