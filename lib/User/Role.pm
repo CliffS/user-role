@@ -91,7 +91,7 @@ sub is
 	}
     }
     else {
-	return true if defined $posessess and ($required eq $possesses);
+	return true if defined $possesses and ($required eq $possesses);
     }
     return false;
 }
