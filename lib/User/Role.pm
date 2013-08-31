@@ -127,7 +127,10 @@ sub check
     if (ref $required  eq 'ARRAY')
     {
 	my $_;
-	return true if $self->check($_) foreach @$required;
+	foreach (@$required)
+	{
+	    return true if $self->check($_);
+	}
     }
     if (ref $possesses eq 'ARRAY')
     {
