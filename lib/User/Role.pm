@@ -12,6 +12,8 @@ use Data::Dumper;
 
 use enum qw{ false true };
 
+use version 0.77; our $VERSION = qv(v0.9.0);
+
 =head1 NAME
 
 User::Role - Define recursive user roles
@@ -83,12 +85,40 @@ sub load
     return $self;
 }
 
+=head3 add
+
+    $role->add('new_role', 'parent');
+
+=cut
+
 sub add
 {
     my $self = shift;
     my ($id, $parent) = @_;
     $self->{$id} = $parent;
 }
+
+=head3 check
+
+    my $ok = $role->check($required, $possesses);
+
+=over
+
+=item $required
+
+This is either a string or a reference to an array of strings.
+Each string represents a role that is required.  Note, the check
+will pass if the user possesses B<any> of the required roles or
+a role having a required role as a parent.
+
+=item $possesses
+
+Again, this is either a string or a reference to an array of strings.
+Each string represents a role possessed by the user.
+
+=back
+
+=cut
 
 sub check
 {
@@ -121,12 +151,32 @@ sub check
     return false;
 }
 
+=head3 enforce
+
+    $role->enforce($required, $possesses);
+
+This works the same way as L<check> but will die unless
+the check succeeds.
+
+=cut
+
 sub enforce
 {
     my $self = shift;
     my $ok = $self->check(@_);
     die "unenforceable" unless $ok;
 }
+
+=head3 is
+
+    $role->is($required, $possesses);
+
+This works similarly to L<check>.  The difference is that
+C<$required> B<must> be a simple string and that the check is
+made without reference to the parentage of the C<$required>
+string.
+
+=cut
 
 sub is
 {
