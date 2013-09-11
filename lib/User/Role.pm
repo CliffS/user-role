@@ -4,15 +4,13 @@ use strict;
 use warnings;
 use 5.14.0;
 
-use version; our $VERSION = qv('v0.2.0');
-
 use Tie::DBI;
 use Carp;
 use Data::Dumper;
 
 use enum qw{ false true };
 
-use version 0.77; our $VERSION = qv(v0.9.0);
+use version 0.77; our $VERSION = qv(v0.9.1);
 
 =head1 NAME
 
@@ -20,7 +18,7 @@ User::Role - Define recursive user roles
 
 =head1 VERSION
 
-This document describes User::Role version 0.9.0
+This document describes User::Role version 0.9.1
 
 =head1 SYNOPSIS
 
@@ -129,7 +127,7 @@ sub check
 	my $_;
 	foreach (@$required)
 	{
-	    return true if $self->check($_);
+	    return true if $self->check($_, $possesses);
 	}
     }
     if (ref $possesses eq 'ARRAY')
