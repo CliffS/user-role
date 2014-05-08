@@ -10,7 +10,7 @@ use Data::Dumper;
 
 use enum qw{ false true };
 
-use version 0.77; our $VERSION = qv(v0.9.1);
+use version 0.77; our $VERSION = qv(v1.0.0);
 
 =head1 NAME
 
@@ -18,7 +18,7 @@ User::Role - Define recursive user roles
 
 =head1 VERSION
 
-This document describes User::Role version 0.9.1
+This document describes User::Role version 1.0.0
 
 =head1 SYNOPSIS
 
@@ -124,7 +124,6 @@ sub check
     my ($required, $possesses) = @_;
     if (ref $required  eq 'ARRAY')
     {
-	my $_;
 	foreach (@$required)
 	{
 	    return true if $self->check($_, $possesses);
