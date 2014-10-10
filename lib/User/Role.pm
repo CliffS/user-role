@@ -10,7 +10,7 @@ use Data::Dumper;
 
 use enum qw{ false true };
 
-use version 0.77; our $VERSION = qv(v1.0.0);
+use version 0.77; our $VERSION = qv(v1.1.0);
 
 =head1 NAME
 
@@ -18,7 +18,7 @@ User::Role - Define recursive user roles
 
 =head1 VERSION
 
-This document describes User::Role version 1.0.0
+This document describes User::Role version 1.1.0
 
 =head1 SYNOPSIS
 
@@ -193,6 +193,32 @@ sub is
 	return true if defined $possesses and ($required eq $possesses);
     }
     return false;
+}
+
+=head3 parents
+
+    $role->parents('role');
+
+This returns an array or an array-ref of the role and all
+its parents.
+
+=cut
+
+sub parents
+{
+    my $self = shift;
+    my $roles = shift;
+    my @roles = ref $roles eq 'ARRAY' ? @$roles : ($roles);
+    my @parents;
+    foreach my $role (@roles)
+    {
+        if (exists $self->{$role})
+        {
+            push @parents, $role;
+            push @parents, $self->parents($self->{$role}) if $self->{$role};
+        }
+    }
+    return wantarray ? @parents : \@parents;
 }
 
 
